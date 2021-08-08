@@ -19,7 +19,7 @@ def linearGenerator(m, a, c, n):
     # c: corrimiento
     # n: cantidad de numeros a generar
 
-    seed = round(random.random() * 100)
+    seed = round(random.random() * 100) % m
     randomNums = [0] * n
     randomNums[0] = seed
 
