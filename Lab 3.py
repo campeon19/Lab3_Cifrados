@@ -57,19 +57,21 @@ def wichmanGenerator(ss, n):
 #Suponiendo que se alimenta el primero
 def lfsr(seed,n,step = 1,positions = []):
     def nextStep(chain):
-        step = chain[1:]
+        step = chain[:-1]
         return str(reduce(lambda i, j: int(i)^int(j), [chain[n] for n in positions])) + step
     result = ''
     current = '{0:b}'.format(seed)
-    for x in range(n*step):
-        current = nextStep(current)[-1]
+    for x in range(1,(1 + n*step)):
+        current = nextStep(current)
         if (x%step) ==0:
-            result += current
+            result += current[-1]
         
     return result
 
+
 def xor(bits1, bits2):
     result = ''
+    print(len(bits1), len(bits2))
     for n in range(len(bits1)):
         result += '0' if bits1[n] == bits2[n] else '1'
     return result
@@ -102,12 +104,12 @@ bits = img2bits(I)
 
 
 r = linearGenerator(31111, 1111111, 31, 100, int(len(bits)/8))
-
+lfsrPrueba = lfsr(369112786, len(bits), positions =[1,6,7,13,14,18,21,27], step=3)
 # r = wichmanGenerator([111, 711, 313],  int(len(bits)/8))
 
 # r = lfsr(311, int(len(bits)/8))
 
-s = xor(bits, r)
+s = xor(bits, lfsrPrueba)
 
 # print(r[:100])
 
