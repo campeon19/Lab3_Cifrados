@@ -6,13 +6,17 @@
 # Jose Javier Hurtarte 19707
 # Christian Pérez 19710
 
-import numpy
+import numpy as np
 import random
-
+import re
+import matplotlib.pyplot as plt
+from PIL import Image
+from skimage.data import camera 
+from functools import reduce
 
 # Hansel Rata 🐀
 
-
+# 
 def linearGenerator(m, a, c, n):
     # a: multiplicador
     # m: modulo
@@ -50,3 +54,44 @@ def wichmanGenerator(a, b, n):
     bits = ''.join(list(map(lambda x: '{0:08b}'.format(int(x * 100)), randomNums)))
 
     return bits
+
+#Suponiendo que se alimenta el primero
+def lfsr(seed,n,step = 1,positions = []):
+    def nextStep(chain):
+        step = chain[1:]
+        return str(reduce(lambda i, j: int(i)^int(j), [chain[n] for n in positions])) + step
+    result = ''
+    current = '{0:b}'.format(seed)
+    for x in range(n*step):
+        current = nextStep(current)[-1]
+        if (x%step) ==0:
+            result += current
+        
+    return result
+
+
+def img2bits(I):
+    m, n = I.shape
+    s = ''
+    for i in range(0, m):
+        for j in range(0, n):
+            s = s + '{0:08b}'.format(I[i,j])
+    return s
+
+def bits2img(x, shape):
+    m, n = shape
+    I = np.zeros(m*n).astype(np.uint8)
+    bts = re.findall('........', x)
+    for i in range(0, len(bts)):
+        I[i] = int(bts[i], 2)
+    I = I.reshape(m,n)
+    return I
+
+# I = camera()
+# J = Image.fromarray(I)
+# J = J.resize((J.size[0]//2, J.size[1]//2), Image.LANCZOS)
+# I = np.array(J)
+
+# plt.figure()
+# plt.imshow(I, cmap='gray')
+# plt.show()
