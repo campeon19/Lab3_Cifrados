@@ -118,7 +118,8 @@ I2 = bits2img(s, I.shape)
 
 
 plt.figure()
-plt.imshow(I2, cmap='gray', title='XDDD')
+plt.imshow(I2, cmap='gray')
+plt.title("Linear graph")
 plt.show()
 
 
