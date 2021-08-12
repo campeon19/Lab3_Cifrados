@@ -17,13 +17,12 @@ from functools import reduce
 # Hansel Rata 🐀
 
 # 
-def linearGenerator(m, a, c, n):
+def linearGenerator(seed, m, a, c, n):
     # a: multiplicador
     # m: modulo
     # c: corrimiento
     # n: cantidad de numeros a generar
 
-    seed = round(random.random() * 100) % m
     randomNums = [0] * n
     randomNums[0] = seed
 
@@ -34,10 +33,10 @@ def linearGenerator(m, a, c, n):
     return bits
 
 
-def wichmanGenerator(a, b, n):
-    s1 = round(random.random() * 10000)
-    s2 = round(random.random() * 10000)
-    s3 = round(random.random() * 10000)
+def wichmanGenerator(ss, n):
+    s1 = ss[0]
+    s2 = ss[1]
+    s3 = ss[2]
     m1 = 30269
     m2 = 30307
     m3 = 30323
@@ -48,10 +47,10 @@ def wichmanGenerator(a, b, n):
         s1 = (171 * s1) % m1
         s2 = (172 * s2) % m2
         s3 = (170 * s3) % m3
-        v = (s1 / m1 + s2 / m2 + s3 / m3) % 1
+        v = ((s1 / m1) + (s2 / m2) + (s3 / m3)) % 1
         randomNums.append(v)
 
-    bits = ''.join(list(map(lambda x: '{0:08b}'.format(int(x * 100)), randomNums)))
+    bits = ''.join(list(map(lambda x: '{0:08b}'.format(int(x*1000)), randomNums)))
 
     return bits
 
@@ -67,6 +66,12 @@ def lfsr(seed,n,step = 1,positions = []):
         if (x%step) ==0:
             result += current
         
+    return result
+
+def xor(bits1, bits2):
+    result = ''
+    for n in range(len(bits1)):
+        result += '0' if bits1[n] == bits2[n] else '1'
     return result
 
 
@@ -87,11 +92,33 @@ def bits2img(x, shape):
     I = I.reshape(m,n)
     return I
 
-# I = camera()
-# J = Image.fromarray(I)
-# J = J.resize((J.size[0]//2, J.size[1]//2), Image.LANCZOS)
-# I = np.array(J)
 
-# plt.figure()
-# plt.imshow(I, cmap='gray')
-# plt.show()
+I = camera()
+J = Image.fromarray(I)
+J = J.resize((J.size[0]//2, J.size[1]//2), Image.LANCZOS)
+I = np.array(J)
+
+bits = img2bits(I)
+
+
+r = linearGenerator(31111, 1111111, 31, 100, int(len(bits)/8))
+
+# r = wichmanGenerator([111, 711, 313],  int(len(bits)/8))
+
+# r = lfsr(311, int(len(bits)/8))
+
+s = xor(bits, r)
+
+# print(r[:100])
+
+I2 = bits2img(s, I.shape)
+
+
+
+plt.figure()
+plt.imshow(I2, cmap='gray')
+plt.show()
+
+
+
+# print(len(r))
