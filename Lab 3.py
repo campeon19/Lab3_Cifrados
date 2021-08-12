@@ -104,12 +104,12 @@ bits = img2bits(I)
 
 
 r = linearGenerator(31111, 1111111, 31, 100, int(len(bits)/8))
-lfsrPrueba = lfsr(369112786, len(bits), positions =[1,6,7,13,14,18,21,27], step=3)
-# r = wichmanGenerator([111, 711, 313],  int(len(bits)/8))
+#lfsrPrueba = lfsr(369112786, len(bits), positions =[1,6,7,13,14,18,21,27], step=3)
+#r = wichmanGenerator([111, 711, 313],  int(len(bits)/8))
 
 # r = lfsr(311, int(len(bits)/8))
 
-s = xor(bits, lfsrPrueba)
+s = xor(bits, r)
 
 # print(r[:100])
 
@@ -118,7 +118,7 @@ I2 = bits2img(s, I.shape)
 
 
 plt.figure()
-plt.imshow(I2, cmap='gray')
+plt.imshow(I2, cmap='gray', title='XDDD')
 plt.show()
 
 
